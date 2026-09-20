@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1.0">
+    <title>Система электронного голосования</title>
+    <style>
+        body {
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .main-container {
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .instruction-box {
+            background-color: #ffffff;
+            border-left: 5px solid #00ffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .bulletin-card {
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+        }
+        .bulletin-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            color: #1a202c;
+        }
+        .party-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .party-row:hover {
+            border-color: #64748b;
+            background-color: #f8fafc;
+        }
+        .party-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+        .checkbox-container {
+            position: relative;
+            width: 28px;
+            height: 28px;
+        }
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 24px;
+            width: 24px;
+            background-color: #fff;
+            border: 2px solid #a0aec0;
+            border-radius: 6px;
+        }
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: #2c3e50;
+            border-color: #2c3e50;
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .checkbox-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+        .checkbox-container .checkmark:after {
+            left: 8px;
+            top: 3px;
+            width: 5px;
+            height: 11px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+        .btn-submit {
+            display: block;
+            width: 100%;
+            background-color: #2c3e50;
+            color: #ffffff;
+            border: none;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 25px;
+            text-transform: uppercase;
+        }
+        .btn-submit:hover {
+            background-color: #1a202c;
+        }
+        .result-box {
+            display: none;
+            text-align: center;
+            padding: 50px 30px;
+        }
+        .success-icon {
+            font-size: 60px;
+            color: #38a169;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <div id="setup-view">
+            <div class="instruction-box">
+                <strong>ИНСТРУКЦИЯ ИЗБИРАТЕЛЯ:</strong><br>
+                Электронный бюллетень предназначен для 
+                тайного голосования. Поставьте галочку в 
+                квадрате напротив выбранной организации. 
+                Допускается выбор только одной позиции.
+            </div>
+
+            <div class="bulletin-card">
+                <div class="bulletin-title">Электронный бюллетень</div>
+
+                <form id="voteForm">
+                    <!-- 1 -->
+                    <div class="party-row" onclick="selectParty('p1')">
+                        <div class="party-name">1. ЕДИНАЯ РОССИЯ</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p1" value="ЕР">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <!-- 2 -->
+                    <div class="party-row" onclick="selectParty('p2')">
+                        <div class="party-name">2. ОБЩЕСТВЕННОЕ ДВИЖЕНИЕ «ПРОСТЫЕ ПРАВИЛА»</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p2" value="ПП">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3 -->
+                    <div class="party-row" onclick="selectParty('p3')">
+                        <div class="party-name">3. ЛДПР</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p3" value="ЛДПР">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <!-- 4 -->
+                    <div class="party-row" onclick="selectParty('p4')">
+                        <div class="party-name">4. СПРАВЕДЛИВАЯ РОССИЯ</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p4" value="СР">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <!-- 5 -->
+                    <div class="party-row" onclick="selectParty('p5')">
+                        <div class="party-name">5. ПАРТИЯ «РОДИНА»</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p5" value="РОДИНА">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <!-- 6 -->
+                    <div class="party-row" onclick="selectParty('p6')">
+                        <div class="party-name">6. КПРФ</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p6" value="КПРФ">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <!-- 7 -->
+                    <div class="party-row" onclick="selectParty('p7')">
+                        <div class="party-name">7. Партия «НОВЫЕ ЛЮДИ»</div>
+                        <div class="checkbox-container">
+                            <input type="radio" name="fv" id="p7" value="НЛ">
+                            <span class="checkmark"></span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-submit" 
+                            onclick="submitVote()">
+                        Подтвердить и отправить голос
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="result-view" class="result-box bulletin-card">
+            <div class="success-icon">✓</div>
+            <h2>Спасибо за участие в голосовании!</h2>
+            <p>Ваш электронный бюллетень успешно обработан системой. 
+               Голос зашифрован и учтен в распределенном реестре.</p>
+        </div>
+
+    </div>
+
+    <script>
+        function selectParty(id) {
+            document.getElementById(id).checked = true;
+        }
+
+        function submitVote() {
+            const form = document.getElementById('voteForm');
+            const selected = form.querySelector(
+                'input[name="fv"]:checked'
+            );
+            
+            if (!selected) {
+                alert('Пожалуйста, выберите вариант!');
+                return;
+            }
+            
+            document.getElementById('setup-view').style.display = 'none';
+            document.getElementById('result-view').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
